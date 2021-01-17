@@ -19,18 +19,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!--<intent-filter>-->
-                <!--<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />-->
-            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
 
-            <!--<meta-data-->
-                <!--android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"-->
-                <!--android:resource="@xml/device_filter" />-->
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.hardware.usb.host" />
-    <!--<uses-permission android:name="android.permission.USB_PERMISSION" />-->
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
 
     <!--<uses-sdk android:minSdkVersion="17" android:targetSdkVersion="26" />-->
 </manifest>

@@ -20,11 +20,11 @@ android {
     }
 }
 
-//allprojects {
-//    repositories {
-//        maven { url 'https://jitpack.io'}
-//    }
-//}
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io'}
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -36,5 +36,5 @@ dependencies {
 
     implementation 'com.squareup.okhttp:okhttp:2.4.0'
     implementation 'com.jjoe64:graphview:4.2.2'
-//    compile 'com.github.mik3y:usb-serial-for-android:2.+'
+    compile 'com.github.mik3y:usb-serial-for-android:2.+'
 }
