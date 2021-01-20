@@ -1,20 +1,24 @@
 package graph.monitoring.fpt;
 
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.jjoe64.graphview.GraphView;
 
-//import java.io.IOException;
+import java.io.IOException;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -23,11 +27,13 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-//import org.json.JSONArray;
-//import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -63,19 +69,76 @@ public class MainActivity extends AppCompatActivity {
 
         LineGraphSeries<DataPoint> seriesTemp = new LineGraphSeries<>(dataPointTemp);
 
-//        showDataOnGraph(seriesTemp, graphTemperature);
+        showDataOnGraph(seriesTemp, graphTemperature);
 
         graphTemperature.getViewport().setMinY(0);
         graphTemperature.getViewport().setMaxY(60);
-        //graphTemperature.getViewport().setYAxisBoundsManual(true);
+        graphTemperature.getViewport().setYAxisBoundsManual(true);
         // end do not understand
 
-//        setupBlinkyTimer();
+        setupBlinkyTimer();
 
-        openUART();
+        //openUART(String message);
     }
 
-    private void openUART() {
+    final int REQ_CODE_SPEECH_INPUT = 100;
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                "Dang lang nghe...");
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(),
+                    "khong ho tro giong noi",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent
+            data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQ_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    Log.d("VOICE", "***" + result.get(0) + "***");
+
+                    String cmd = result.get(0).toLowerCase();
+
+                    if (cmd.contains("bật") && cmd.contains("đèn")){
+                        try {
+//                            port.write("1#".getBytes(), 1000);
+                            port.write("ABC#".getBytes(), 1000);
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(),
+                                    "khong ho tro giong noi nhe",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                    // ket qua google giong noi
+
+                    // EditText input ((EditText)findViewById("wtf"));
+                    // input.setText(result.get(0)); // set the input data to the editText alongside if want to.
+                    // 0 la chinh xac nhat
+                    // 1 vua
+                    // 2 khong chinh xac
+                }
+                break;
+            }
+
+        }
+    }
+
+    private void openUART(String message) {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
 
@@ -112,86 +175,107 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void showDataOnGraph(LineGraphSeries<DataPoint> series, GraphView graph){
-//        if(graph.getSeries().size() > 0){
-//            graph.getSeries().remove(0);
-//        }
-//        graph.addSeries(series);
-//        series.setDrawDataPoints(true);
-//        series.setDataPointsRadius(10);
-//    }
-//
-//    private void sendDataToThingSpeak(String ID, String value){
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        Request.Builder builder = new Request.Builder();
-//
-//        String apiURL = "https://api.thingspeak.com/update?api_key=EJA7L9H9IX7R3P0M&field1=" + value;
-//
-//        Request request = builder.url(apiURL).build();
-//
-//        okHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                String jsonString = response.body().string();
-//                Log.d("ABC", jsonString);//jsonString la chuoi lay tu server tren thing speak
-//            }
-//        });
-//    }
-//
-//    private void getDataFromThingSpeak(int so_luong){
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        Request.Builder builder = new Request.Builder();
-//        String apiURL = "https://api.thingspeak.com/channels/1281623/feeds.json?results=5"; //"https://api.thingspeak.com/channels/976324/feeds.json?results=5";
-//        Request request = builder.url(apiURL).build();
-//
-//        okHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                String jsonString = response.body().string();
-//                try{
-//                    JSONObject jsonData = new JSONObject(jsonString);
-//                    JSONArray jsonArray = jsonData.getJSONArray("feeds");
-//                    double temp0 = jsonArray.getJSONObject(0).getDouble("field1");
-//                    double temp1 = jsonArray.getJSONObject(1).getDouble("field1");
-//                    double temp2 = jsonArray.getJSONObject(2).getDouble("field1");
-//                    double temp3 = jsonArray.getJSONObject(3).getDouble("field1");
-//                    double temp4 = jsonArray.getJSONObject(4).getDouble("field1");
-//
-//                    LineGraphSeries<DataPoint> seriesTemp = new LineGraphSeries<>(new DataPoint[]
-//                            {   new DataPoint(0, temp0),
-//                                new DataPoint(1, temp1),
-//                                new DataPoint(2, temp2),
-//                                new DataPoint(3, temp3),
-//                                new DataPoint(4, temp4)
-//                            });
-//
-//                    showDataOnGraph(seriesTemp, graphTemperature);
-//
-//
-//                }catch (Exception e){}
-//            }
-//        });
-//    }
-//
-//    private void setupBlinkyTimer(){
-//        Timer mTimer = new Timer();
-//        TimerTask mTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                //getDataFromThingSpeak();
-//                sendDataToThingSpeak("1","12");
-//            }
-//        };
-//        mTimer.schedule(mTask, 2000, 5000);
-//    }
+    private void showDataOnGraph(LineGraphSeries<DataPoint> series, GraphView graph){
+        if(graph.getSeries().size() > 0){
+            graph.getSeries().remove(0);
+        }
+        graph.addSeries(series);
+        series.setDrawDataPoints(true);
+        series.setDataPointsRadius(10);
+    }
+
+    private void sendDataToThingSpeak(String ID, String value){
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request.Builder builder = new Request.Builder();
+
+        String apiURL = "https://api.thingspeak.com/update?api_key=EJA7L9H9IX7R3P0M&field1=" + value;
+
+        Request request = builder.url(apiURL).build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String jsonString = response.body().string();
+                Log.d("ABC", jsonString);//jsonString la chuoi lay tu server tren thing speak
+            }
+        });
+    }
+
+    private void getDataFromThingSpeak(int so_luong){
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request.Builder builder = new Request.Builder();
+        String apiURL = "https://api.thingspeak.com/channels/1281623/feeds.json?results=5"; //"https://api.thingspeak.com/channels/976324/feeds.json?results=5";
+        Request request = builder.url(apiURL).build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String jsonString = response.body().string();
+                try{
+                    JSONObject jsonData = new JSONObject(jsonString);
+                    JSONArray jsonArray = jsonData.getJSONArray("feeds");
+                    double temp0 = jsonArray.getJSONObject(0).getDouble("field1");
+                    double temp1 = jsonArray.getJSONObject(1).getDouble("field1");
+                    double temp2 = jsonArray.getJSONObject(2).getDouble("field1");
+                    double temp3 = jsonArray.getJSONObject(3).getDouble("field1");
+                    double temp4 = jsonArray.getJSONObject(4).getDouble("field1");
+
+                    LineGraphSeries<DataPoint> seriesTemp = new LineGraphSeries<>(new DataPoint[]
+                            {   new DataPoint(0, temp0),
+                                new DataPoint(1, temp1),
+                                new DataPoint(2, temp2),
+                                new DataPoint(3, temp3),
+                                new DataPoint(4, temp4)
+                            });
+
+                    showDataOnGraph(seriesTemp, graphTemperature);
+
+
+                }catch (Exception e){}
+            }
+        });
+    }
+
+    /** Called when the user touches the button */
+    public void sendMessageBtn1(View view) {
+        openUART("1");
+    }
+
+    public void sendMessageBtn2(View view) {
+        openUART("2");
+    }
+
+    public void sendMessageBtn3(View view) {
+        openUART("3");
+    }
+
+    public void sendMessageBtn4(View view) {
+        openUART("4");
+    }
+
+    public void sendMessageBtn5(View view) {
+        promptSpeechInput();
+    }
+
+    private void setupBlinkyTimer(){
+        Timer mTimer = new Timer();
+        TimerTask mTask = new TimerTask() {
+            @Override
+            public void run() {
+                //getDataFromThingSpeak();
+                sendDataToThingSpeak("1","14");
+            }
+        };
+        mTimer.schedule(mTask, 2000, 5000);
+    }
 }
