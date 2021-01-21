@@ -94,6 +94,21 @@
             android:onClick="sendMessageBtn5"/>
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/editSpeech"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Name" />
+
+    <Button
+        android:id="@+id/btnRead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        android:onClick="onReadTextClick"/>
+
     <TextView
         android:id="@+id/txtMessage"
         android:layout_width="match_parent"

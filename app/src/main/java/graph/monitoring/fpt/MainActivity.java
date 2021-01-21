@@ -90,7 +90,8 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
 
         openUART("ad");
 
-        tts=new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+        // Text to Speech
+        tts =new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
 
             @Override
             public void onInit(int status) {
@@ -102,14 +103,22 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
                         Log.e("ABC", "This Language is not supported");
                     }
                     else{
-//                        ConvertTextToSpeech();
-                        Log.e("ABC", "okok");
+                        ConvertTextToSpeech("Hello");
+                        Log.d("ABC", "okok");
                     }
                 }
                 else
                     Log.e("error", "Initilization Failed!");
             }
         });
+        //end text to speech
+        ConvertTextToSpeech("Hello Toan!");
+    }
+
+    // TODO: text to speech
+    public void onReadTextClick(View v){
+        EditText et=(EditText)findViewById(R.id.editSpeech);
+        ConvertTextToSpeech(et.getText().toString());
     }
 
     private void ConvertTextToSpeech(String data) {
@@ -123,6 +132,13 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
             tts.speak(data, TextToSpeech.QUEUE_FLUSH, null);
     }
 
+    @Override
+    public void onRunError(Exception e) {
+
+    }
+    // end text to speech
+
+    // TODO: microbit receive speech from phone
     final int REQ_CODE_SPEECH_INPUT = 100;
     private void promptSpeechInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -179,7 +195,9 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
 
         }
     }
+    // end microbit receive speech from phone
 
+    // TODO: phone connect by usb
     private void openUART(String message) {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
@@ -216,7 +234,9 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
             }
         }
     }
+    // end phone connect by usb
 
+    // TODO: connect Thing Speak
     private void showDataOnGraph(LineGraphSeries<DataPoint> series, GraphView graph){
         if(graph.getSeries().size() > 0){
             graph.getSeries().remove(0);
@@ -288,7 +308,7 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         });
     }
 
-    /** Called when the user touches the button */
+    // TODO: /** Called when the user touches the button */
     public void sendMessageBtn1(View view) {
         openUART("1");
     }
@@ -309,6 +329,7 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         promptSpeechInput();
     }
 
+    // TODO set time out
     private void setupBlinkyTimer(){
         Timer mTimer = new Timer();
         TimerTask mTask = new TimerTask() {
@@ -321,6 +342,7 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         mTimer.schedule(mTask, 2000, 5000);
     }
 
+    // TODO: microbit to phone
     String buffer = "";
     @Override
     public void onNewData(byte[] data) {
@@ -339,10 +361,5 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
             Log.d("ABC", cmd);
             Log.d("ABC", buffer);
         }
-    }
-
-    @Override
-    public void onRunError(Exception e) {
-
     }
 }
