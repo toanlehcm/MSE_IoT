@@ -1,5 +1,6 @@
 package graph.monitoring.fpt;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -7,15 +8,19 @@ import android.content.Intent;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
+import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import com.jjoe64.graphview.GraphView;
 
 import java.io.IOException;
@@ -36,8 +41,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity implements SerialInputOutputManager.Listener {
 
     final String TAG = "MAIN_TAG";
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
@@ -47,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private int counter = 10;
 
     GraphView graphTemperature, graphLightLevel;
+
+    String text;
+    EditText et;
+    TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +88,39 @@ public class MainActivity extends AppCompatActivity {
 
         setupBlinkyTimer();
 
-        //openUART(String message);
+        openUART("ad");
+
+        tts=new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+
+            @Override
+            public void onInit(int status) {
+                // TODO Auto-generated method stub
+                if(status == TextToSpeech.SUCCESS){
+                    int result=tts.setLanguage(Locale.getDefault());
+                    if(result==TextToSpeech.LANG_MISSING_DATA ||
+                            result==TextToSpeech.LANG_NOT_SUPPORTED){
+                        Log.e("ABC", "This Language is not supported");
+                    }
+                    else{
+//                        ConvertTextToSpeech();
+                        Log.e("ABC", "okok");
+                    }
+                }
+                else
+                    Log.e("error", "Initilization Failed!");
+            }
+        });
+    }
+
+    private void ConvertTextToSpeech(String data) {
+        // TODO Auto-generated method stub
+//        text = et.getText().toString();
+//        if(text==null||"".equals(text))
+//        {
+//            text = "Content not available";
+//            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+//        }else
+            tts.speak(data, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     final int REQ_CODE_SPEECH_INPUT = 100;
@@ -166,8 +208,8 @@ public class MainActivity extends AppCompatActivity {
                     port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
                     port.write("ABC#".getBytes(), 1000);
 
-                    //SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, this);
-                    //Executors.newSingleThreadExecutor().submit(usbIoManager);
+                    SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, this);
+                    Executors.newSingleThreadExecutor().submit(usbIoManager);
                 } catch (Exception e) {
 
                 }
@@ -277,5 +319,30 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mTimer.schedule(mTask, 2000, 5000);
+    }
+
+    String buffer = "";
+    @Override
+    public void onNewData(byte[] data) {
+        buffer += new String(data);
+//        buffer = "12!123qwe#124";
+        TextView myAwesomeTextView = (TextView)findViewById(R.id.txtMessage);
+
+        int SoC = buffer.indexOf("!");
+        int EoC = buffer.indexOf("#");
+
+        if (SoC >= 0 && EoC > SoC) {
+            String cmd = buffer.substring(SoC + 1, EoC);
+            myAwesomeTextView.setText(cmd);
+            buffer = buffer.substring(EoC + 1, buffer.length());
+
+            Log.d("ABC", cmd);
+            Log.d("ABC", buffer);
+        }
+    }
+
+    @Override
+    public void onRunError(Exception e) {
+
     }
 }

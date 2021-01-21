@@ -94,6 +94,12 @@
             android:onClick="sendMessageBtn5"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txtMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
