@@ -21,18 +21,18 @@ public class MQTTService {
     final String serverUri = "tcp://io.adafruit.com:1883"; // giao thức tầm tcp, co the xuong lop UDB (khong theo thu tu, mat gói)
 
 
-    final String clientId = "fghjkl";// 1 client ket noi vao server phai co 1 id de generate. Phai co 1 ham de xu ly id (pass+user_mail+hash+md5)
-    //    final String subscriptionTopic = "ToanLeThanh/f/+"; // neu ghi dau + thi at ca nhung gi (channel) cua server deu supprite het. Tat ca nhung feed tren ... Muon dúng cai thi dhi cu the
-    final String subscriptionTopic = "tungdt/f/+";
+    final String clientId = "toanId";// 1 client ket noi vao server phai co 1 id de generate. Phai co 1 ham de xu ly id (pass+user_mail+hash+md5)
+    final String subscriptionTopic = "ToanLeThanh/f/+"; // neu ghi dau + thi at ca nhung gi (channel) cua server deu supprite het. Tat ca nhung feed tren ... Muon dúng cai thi dhi cu the
+//    final String subscriptionTopic = "tungdt/f/+";
 
-    //    final String username = "ToanLeThanh";
-    //    final String password = "aio_ZQmR27WWw7dGwXMapIwM9BvXl1lR";
-    final String username = "tungdt";
-    final String password = "aio_UNBN08aAEbYj4tAnKBCaSiepZ90X";
+    final String username = "ToanLeThanh";
+    final String password = "aio_ZQmR27WWw7dGwXMapIwM9BvXl1lR";
+//    final String username = "tungdt";
+//    final String password = "aio_UNBN08aAEbYj4tAnKBCaSiepZ90X";
 
     public MqttAndroidClient mqttAndroidClient;
 
-    public MQTTService(Context context){
+    public MQTTService(Context context) {
         // ham khoi tao cua 1 class phao co ten giong class, phai public
         mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
@@ -63,7 +63,7 @@ public class MQTTService {
         mqttAndroidClient.setCallback(callback);
     }
 
-    private void connect(){
+    private void connect() {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
@@ -71,7 +71,6 @@ public class MQTTService {
         mqttConnectOptions.setPassword(password.toCharArray());
 
         try {
-
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -90,9 +89,7 @@ public class MQTTService {
                     Log.w("Mqtt", "Failed to connect to: " + serverUri + exception.toString());
                 }
             });
-
-
-        } catch (MqttException ex){
+        } catch (MqttException ex) {
             ex.printStackTrace();
         }
     }
@@ -102,7 +99,7 @@ public class MQTTService {
             mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("Mqtt","Subscribed!");
+                    Log.w("Mqtt", "Subscribed!");
 //                    Ultils.hideProgressDialog(); // ket noi server adafruit hien process bar, khi ket noi xong thi mat.
                 }
 
@@ -111,7 +108,6 @@ public class MQTTService {
                     Log.w("Mqtt", "Subscribed fail!");
                 }
             });
-
         } catch (MqttException ex) {
             System.err.println("Exceptionst subscribing");
             ex.printStackTrace();
