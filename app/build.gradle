@@ -34,7 +34,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation 'com.squareup.okhttp:okhttp:2.4.0'
+    implementation 'com.squareup.okhttp:okhttp:2.4.0'  //thư viện truy cập internet
     implementation 'com.jjoe64:graphview:4.2.2'
     compile 'com.github.mik3y:usb-serial-for-android:2.+'
 }

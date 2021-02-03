@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,33 +44,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends Activity implements SerialInputOutputManager.Listener {
+public class MainActivity extends Activity {
 
-    final String TAG = "MAIN_TAG";
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
     UsbSerialPort port;
 
-    private int counter = 10;
-
     GraphView graphTemperature, graphLightLevel;
-
-    String text;
-    EditText et;
-    TextToSpeech tts;
+    Button btnOne, btnTwo, btnThree, btnFour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // connect to ThingSpeak
         graphTemperature = findViewById(R.id.graphTemperature);
-        //R.id cau lenh ho tro san cua java
-        //graphTemperature: ten cua code java - con tro ben java
-        //graphTemperature: ten ben html - doi tuong tao ra ben giao dien
-        // muc dich maping voi nhau
         graphLightLevel = findViewById((R.id.graphLightLevel));
 
-        // do not understand
         DataPoint[] dataPointTemp = new DataPoint[5];
         dataPointTemp[0] = new DataPoint(0, 30);
         dataPointTemp[1] = new DataPoint(1, 31);
@@ -84,120 +76,61 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         graphTemperature.getViewport().setMinY(0);
         graphTemperature.getViewport().setMaxY(60);
         graphTemperature.getViewport().setYAxisBoundsManual(true);
-        // end do not understand
 
         setupBlinkyTimer();
 
-        openUART("ad");
+        openUART("TEST");
 
-        // Text to Speech
-        tts =new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+        btnOne = findViewById(R.id.btnOne);
+        btnTwo = findViewById(R.id.btnTwo);
+        btnThree = findViewById(R.id.btnThree);
+        btnFour = findViewById(R.id.btnFour);
 
+        btnOne.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onInit(int status) {
-                // TODO Auto-generated method stub
-                if(status == TextToSpeech.SUCCESS){
-                    int result=tts.setLanguage(Locale.getDefault());
-                    if(result==TextToSpeech.LANG_MISSING_DATA ||
-                            result==TextToSpeech.LANG_NOT_SUPPORTED){
-                        Log.e("ABC", "This Language is not supported");
-                    }
-                    else{
-                        ConvertTextToSpeech("Hello");
-                        Log.d("ABC", "okok");
-                    }
-                }
-                else
-                    Log.e("error", "Initilization Failed!");
+            public void onClick(View view) {
+                openUART("1");
             }
         });
-        //end text to speech
-        ConvertTextToSpeech("Hello Toan!");
-    }
 
-    // TODO: text to speech
-    public void onReadTextClick(View v){
-        EditText et=(EditText)findViewById(R.id.editSpeech);
-        ConvertTextToSpeech(et.getText().toString());
-    }
-
-    private void ConvertTextToSpeech(String data) {
-        // TODO Auto-generated method stub
-//        text = et.getText().toString();
-//        if(text==null||"".equals(text))
-//        {
-//            text = "Content not available";
-//            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-//        }else
-            tts.speak(data, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    @Override
-    public void onRunError(Exception e) {
-
-    }
-    // end text to speech
-
-    // TODO: microbit receive speech from phone
-    final int REQ_CODE_SPEECH_INPUT = 100;
-    private void promptSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                "Dang lang nghe...");
-        try {
-            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(),
-                    "khong ho tro giong noi",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent
-            data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQ_CODE_SPEECH_INPUT: {
-                if (resultCode == RESULT_OK && null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    Log.d("VOICE", "***" + result.get(0) + "***");
-
-                    String cmd = result.get(0).toLowerCase();
-
-                    if (cmd.contains("bật") && cmd.contains("đèn")){
-                        try {
-//                            port.write("1#".getBytes(), 1000);
-                            port.write("ABC#".getBytes(), 1000);
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(),
-                                    "khong ho tro giong noi nhe",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                    // ket qua google giong noi
-
-                    // EditText input ((EditText)findViewById("wtf"));
-                    // input.setText(result.get(0)); // set the input data to the editText alongside if want to.
-                    // 0 la chinh xac nhat
-                    // 1 vua
-                    // 2 khong chinh xac
-                }
-                break;
+        btnTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openUART("2");
             }
+        });
 
-        }
+        btnThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openUART("3");
+            }
+        });
+
+        btnFour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openUART("4");
+            }
+        });
     }
-    // end microbit receive speech from phone
 
-    // TODO: phone connect by usb
+    // TODO: /** Called when the user touches the button */
+//    public void sendMessageBtn1(View view) { openUART("1"); }
+//
+//    public void sendMessageBtn2(View view) {
+//        openUART("2");
+//    }
+//
+//    public void sendMessageBtn3(View view) {
+//        openUART("3");
+//    }
+//
+//    public void sendMessageBtn4(View view) {
+//        openUART("4");
+//    }
+
+    // TODO: phone connect microbit by usb
     private void openUART(String message) {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
@@ -224,17 +157,16 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
                 try {
                     port.open(connection);
                     port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-                    port.write("ABC#".getBytes(), 1000);
+                    port.write((message+"#").getBytes(), 1000);
 
-                    SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, this);
-                    Executors.newSingleThreadExecutor().submit(usbIoManager);
+//                    SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, this);
+//                    Executors.newSingleThreadExecutor().submit(usbIoManager);
                 } catch (Exception e) {
 
                 }
             }
         }
     }
-    // end phone connect by usb
 
     // TODO: connect Thing Speak
     private void showDataOnGraph(LineGraphSeries<DataPoint> series, GraphView graph){
@@ -308,27 +240,6 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         });
     }
 
-    // TODO: /** Called when the user touches the button */
-    public void sendMessageBtn1(View view) {
-        openUART("1");
-    }
-
-    public void sendMessageBtn2(View view) {
-        openUART("2");
-    }
-
-    public void sendMessageBtn3(View view) {
-        openUART("3");
-    }
-
-    public void sendMessageBtn4(View view) {
-        openUART("4");
-    }
-
-    public void sendMessageBtn5(View view) {
-        promptSpeechInput();
-    }
-
     // TODO set time out
     private void setupBlinkyTimer(){
         Timer mTimer = new Timer();
@@ -344,22 +255,22 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
 
     // TODO: microbit to phone
     String buffer = "";
-    @Override
-    public void onNewData(byte[] data) {
-        buffer += new String(data);
-//        buffer = "12!123qwe#124";
-        TextView myAwesomeTextView = (TextView)findViewById(R.id.txtMessage);
-
-        int SoC = buffer.indexOf("!");
-        int EoC = buffer.indexOf("#");
-
-        if (SoC >= 0 && EoC > SoC) {
-            String cmd = buffer.substring(SoC + 1, EoC);
-            myAwesomeTextView.setText(cmd);
-            buffer = buffer.substring(EoC + 1, buffer.length());
-
-            Log.d("ABC", cmd);
-            Log.d("ABC", buffer);
-        }
-    }
+//    @Override
+//    public void onNewData(byte[] data) {
+//        buffer += new String(data);
+////        buffer = "12!123qwe#124";
+//        TextView myAwesomeTextView = (TextView)findViewById(R.id.txtMessage);
+//
+//        int SoC = buffer.indexOf("!");
+//        int EoC = buffer.indexOf("#");
+//
+//        if (SoC >= 0 && EoC > SoC) {
+//            String cmd = buffer.substring(SoC + 1, EoC);
+//            myAwesomeTextView.setText(cmd);
+//            buffer = buffer.substring(EoC + 1, buffer.length());
+//
+//            Log.d("ABC", cmd);
+//            Log.d("ABC", buffer);
+//        }
+//    }
 }
