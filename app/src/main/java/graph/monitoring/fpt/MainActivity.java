@@ -57,8 +57,6 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
     UsbSerialPort port;
 
-//    GraphView graphTemperature;
-    //, graphLightLevel;
     Button btnOne, btnTwo, btnThree, btnFour;
     MQTTService mqttService;
     Button btnOn, btnOff;
@@ -67,27 +65,6 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // connect to ThingSpeak
-        //graphTemperature = findViewById(R.id.graphTemperature);
-        //graphLightLevel = findViewById((R.id.graphLightLevel));
-
-//        DataPoint[] dataPointTemp = new DataPoint[5];
-//        dataPointTemp[0] = new DataPoint(0, 30);
-//        dataPointTemp[1] = new DataPoint(1, 31);
-//        dataPointTemp[2] = new DataPoint(2, 31);
-//        dataPointTemp[3] = new DataPoint(3, 29);
-//        dataPointTemp[4] = new DataPoint(4, 29);
-//
-//        LineGraphSeries<DataPoint> seriesTemp = new LineGraphSeries<>(dataPointTemp);
-
-        //showDataOnGraph(seriesTemp, graphTemperature);
-
-//        graphTemperature.getViewport().setMinY(0);
-//        graphTemperature.getViewport().setMaxY(60);
-//        graphTemperature.getViewport().setYAxisBoundsManual(true);
-
-//        setupBlinkyTimer();
 
         openUART("TEST");
 
@@ -156,6 +133,28 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 Log.d("mqtt", "Recieved: " + message.toString());
+                if (message.toString().equals("1")) {
+                    port.write(("5#").getBytes(), 1000);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView myAwesomeTextView = (TextView)findViewById(R.id.txtMessage);
+                            myAwesomeTextView.setText("Turn on");
+                        }
+                    });
+
+                } else {
+                    port.write(("6#").getBytes(), 1000);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView myAwesomeTextView = (TextView)findViewById(R.id.txtMessage);
+                            myAwesomeTextView.setText("Turn off");
+                        }
+                    });
+                }
             }
 
             @Override
@@ -203,91 +202,6 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         }
     }
 
-    // TODO: connect Thing Speak
-//    private void showDataOnGraph(LineGraphSeries<DataPoint> series, GraphView graph){
-//        if(graph.getSeries().size() > 0){
-//            graph.getSeries().remove(0);
-//        }
-//        graph.addSeries(series);
-//        series.setDrawDataPoints(true);
-//        series.setDataPointsRadius(10);
-//    }
-//
-//    private void sendDataToThingSpeak(String ID, String value){
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        Request.Builder builder = new Request.Builder();
-//
-//        String apiURL = "https://api.thingspeak.com/update?api_key=EJA7L9H9IX7R3P0M&field1=" + value;
-//
-//        Request request = builder.url(apiURL).build();
-//
-//        okHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                String jsonString = response.body().string();
-//                Log.d("ABC", jsonString);//jsonString la chuoi lay tu server tren thing speak
-//            }
-//        });
-//    }
-//
-//    private void getDataFromThingSpeak(int so_luong){
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        Request.Builder builder = new Request.Builder();
-//        String apiURL = "https://api.thingspeak.com/channels/1281623/feeds.json?results=5"; //"https://api.thingspeak.com/channels/976324/feeds.json?results=5";
-//        Request request = builder.url(apiURL).build();
-//
-//        okHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                String jsonString = response.body().string();
-//                try{
-//                    JSONObject jsonData = new JSONObject(jsonString);
-//                    JSONArray jsonArray = jsonData.getJSONArray("feeds");
-//                    double temp0 = jsonArray.getJSONObject(0).getDouble("field1");
-//                    double temp1 = jsonArray.getJSONObject(1).getDouble("field1");
-//                    double temp2 = jsonArray.getJSONObject(2).getDouble("field1");
-//                    double temp3 = jsonArray.getJSONObject(3).getDouble("field1");
-//                    double temp4 = jsonArray.getJSONObject(4).getDouble("field1");
-//
-//                    LineGraphSeries<DataPoint> seriesTemp = new LineGraphSeries<>(new DataPoint[]
-//                            {   new DataPoint(0, temp0),
-//                                new DataPoint(1, temp1),
-//                                new DataPoint(2, temp2),
-//                                new DataPoint(3, temp3),
-//                                new DataPoint(4, temp4)
-//                            });
-//
-//                    showDataOnGraph(seriesTemp, graphTemperature);
-//
-//
-//                }catch (Exception e){}
-//            }
-//        });
-//    }
-
-    // TODO set time out
-//    private void setupBlinkyTimer(){
-//        Timer mTimer = new Timer();
-//        TimerTask mTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                //getDataFromThingSpeak();
-//                sendDataToThingSpeak("1","14");
-//            }
-//        };
-//        mTimer.schedule(mTask, 2000, 5000);
-//    }
-
     // TODO: microbit to phone
     String buffer = "";
     @Override
@@ -302,6 +216,12 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
             String cmd = buffer.substring(SoC + 1, EoC);
             myAwesomeTextView.setText(cmd);
             buffer = buffer.substring(EoC + 1, buffer.length());
+
+            if (cmd.equals("Turn on")) {
+                sendDataMQTT("1");
+            } else {
+                sendDataMQTT("0");
+            }
 
             Log.d("ABCD", cmd);
             Log.d("ABCDE", buffer);
@@ -324,10 +244,9 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         byte[] b = data.getBytes(Charset.forName("UTF-8"));
         msg.setPayload(b);
 
-        Log.d("Toan", "Publish :" + msg);
+        Log.d("Test", "Publish :" + msg);
         try {
             mqttService.mqttAndroidClient.publish("ToanLeThanh/f/BBC_LED2_Feed", msg);
-//            mqttService.mqttAndroidClient.publish("tungdt/f/Feed_BBC_LED", msg);
         } catch (MqttException e) {
         }
     }

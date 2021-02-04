@@ -113,49 +113,4 @@
         android:layout_height="wrap_content"
         android:text="Message" />
 
-    <!-- Chart -->
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="5dp"-->
-                <!--android:background="#ff0000"-->
-                <!--android:text="Chart"-->
-                <!--android:textAlignment="center"-->
-                <!--android:textColor="#ffffff"-->
-                <!--android:textSize="20dp"-->
-                <!--android:textStyle="bold" />-->
-
-            <!--<com.jjoe64.graphview.GraphView-->
-                <!--android:id="@+id/graphChart"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="250dp"-->
-                <!--android:layout_margin="5dp" />-->
-
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="5dp"-->
-                <!--android:background="#ff0000"-->
-                <!--android:text="ÁNH SÁNG"-->
-                <!--android:textAlignment="center"-->
-                <!--android:textColor="#ffffff"-->
-                <!--android:textSize="20dp"-->
-                <!--android:textStyle="bold" />-->
-
-            <!--<com.jjoe64.graphview.GraphView-->
-                <!--android:id="@+id/graphLightLevel"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="250dp"-->
-                <!--android:layout_margin="5dp" />-->
-
-        <!--</LinearLayout>-->
-    <!--</ScrollView>-->
-
 </LinearLayout>

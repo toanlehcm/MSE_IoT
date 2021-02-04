@@ -1,9 +1,5 @@
 package graph.monitoring.fpt;
 
-/**
- * Created by dell on 31/01/2021.
- */
-
 import android.content.Context;
 import android.util.Log;
 
@@ -18,22 +14,18 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTTService {
-    final String serverUri = "tcp://io.adafruit.com:1883"; // giao thức tầm tcp, co the xuong lop UDB (khong theo thu tu, mat gói)
+    final String serverUri = "tcp://io.adafruit.com:1883";
 
 
-    final String clientId = "toanId";// 1 client ket noi vao server phai co 1 id de generate. Phai co 1 ham de xu ly id (pass+user_mail+hash+md5)
-    final String subscriptionTopic = "ToanLeThanh/f/+"; // neu ghi dau + thi at ca nhung gi (channel) cua server deu supprite het. Tat ca nhung feed tren ... Muon dúng cai thi dhi cu the
-//    final String subscriptionTopic = "tungdt/f/+";
+    final String clientId = "toanId";
+    final String subscriptionTopic = "ToanLeThanh/f/+";
 
     final String username = "ToanLeThanh";
-    final String password = "aio_pPAf31G1nFCYvE40MPTikMWcxAcp";
-//    final String username = "tungdt";
-//    final String password = "aio_UNBN08aAEbYj4tAnKBCaSiepZ90X";
+    final String password = "aio_ptdq28f93B7SFwoOIkHithtNBIDb";
 
     public MqttAndroidClient mqttAndroidClient;
 
     public MQTTService(Context context) {
-        // ham khoi tao cua 1 class phao co ten giong class, phai public
         mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
@@ -100,7 +92,7 @@ public class MQTTService {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Log.w("Mqtt", "Subscribed!");
-//                    Ultils.hideProgressDialog(); // ket noi server adafruit hien process bar, khi ket noi xong thi mat.
+//                    Ultils.hideProgressDialog();
                 }
 
                 @Override
