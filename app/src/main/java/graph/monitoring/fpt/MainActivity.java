@@ -44,6 +44,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 
+//connect server io.adafruit.com
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import java.nio.charset.Charset;
+
 public class MainActivity extends Activity implements SerialInputOutputManager.Listener {
 
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
@@ -52,6 +59,8 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
 
     GraphView graphTemperature, graphLightLevel;
     Button btnOne, btnTwo, btnThree, btnFour;
+//    MQTTService mqttService;
+    Button btnOn, btnOff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +94,21 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         btnTwo = findViewById(R.id.btnTwo);
         btnThree = findViewById(R.id.btnThree);
         btnFour = findViewById(R.id.btnFour);
+        btnOn = findViewById(R.id.btnOnLed);
+        btnOff = findViewById(R.id.btnOffLed);
+
+        btnOn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+//                sendDataMQTT("1");
+            }
+        });
+
+        btnOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                sendDataMQTT("0");
+            }
+        });
 
         btnOne.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,4 +286,31 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
     public void onRunError(Exception e) {
 
     }
+
+    // TODO: Led 31/1/2021
+//    mqttService =  new MQTTService(this);
+//    mqttService.setCallback(new MqttCallbackExtended() {
+//    @Override
+//    private void sendDataMQTT(String data) {
+//
+//        MqttMessage msg = new MqttMessage();
+//        msg.setId(1234);
+//        msg.setQos(0);
+//        msg.setRetained(true);
+//        msg.setRetained(true);//update current status when open app.
+//
+//        byte[] b = data.getBytes(Charset.forName("UTF-8"));
+//        msg.setPayload(b);
+//
+//        Log.d("Toan","Publish :" + msg);
+//        Log.d("Toan", "Publish :" + msg);
+//        try {
+//            mqttService.mqttAndroidClient.publish("tungdt/f/Feed_BBC_LED", msg);
+//
+//        }catch (MqttException e){
+//            mqttService.mqttAndroidClient.publish("ToanLeThanh/f/BBC_LED2_Feed", msg);
+////            mqttService.mqttAndroidClient.publish("tungdt/f/Feed_BBC_LED", msg);
+//        } catch (MqttException e) {
+//        }
+//    }
 }
