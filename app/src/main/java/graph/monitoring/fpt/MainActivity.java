@@ -44,7 +44,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SerialInputOutputManager.Listener {
 
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
@@ -115,21 +115,6 @@ public class MainActivity extends Activity {
         });
     }
 
-    // TODO: /** Called when the user touches the button */
-//    public void sendMessageBtn1(View view) { openUART("1"); }
-//
-//    public void sendMessageBtn2(View view) {
-//        openUART("2");
-//    }
-//
-//    public void sendMessageBtn3(View view) {
-//        openUART("3");
-//    }
-//
-//    public void sendMessageBtn4(View view) {
-//        openUART("4");
-//    }
-
     // TODO: phone connect microbit by usb
     private void openUART(String message) {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -159,8 +144,8 @@ public class MainActivity extends Activity {
                     port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
                     port.write((message+"#").getBytes(), 1000);
 
-//                    SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, this);
-//                    Executors.newSingleThreadExecutor().submit(usbIoManager);
+                    SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, this);
+                    Executors.newSingleThreadExecutor().submit(usbIoManager);
                 } catch (Exception e) {
 
                 }
@@ -255,22 +240,26 @@ public class MainActivity extends Activity {
 
     // TODO: microbit to phone
     String buffer = "";
-//    @Override
-//    public void onNewData(byte[] data) {
-//        buffer += new String(data);
-////        buffer = "12!123qwe#124";
-//        TextView myAwesomeTextView = (TextView)findViewById(R.id.txtMessage);
-//
-//        int SoC = buffer.indexOf("!");
-//        int EoC = buffer.indexOf("#");
-//
-//        if (SoC >= 0 && EoC > SoC) {
-//            String cmd = buffer.substring(SoC + 1, EoC);
-//            myAwesomeTextView.setText(cmd);
-//            buffer = buffer.substring(EoC + 1, buffer.length());
-//
-//            Log.d("ABC", cmd);
-//            Log.d("ABC", buffer);
-//        }
-//    }
+    @Override
+    public void onNewData(byte[] data) {
+        buffer += new String(data);
+        TextView myAwesomeTextView = (TextView)findViewById(R.id.txtMessage);
+
+        int SoC = buffer.indexOf("!");
+        int EoC = buffer.indexOf("#");
+
+        if (SoC >= 0 && EoC > SoC) {
+            String cmd = buffer.substring(SoC + 1, EoC);
+            myAwesomeTextView.setText(cmd);
+            buffer = buffer.substring(EoC + 1, buffer.length());
+
+            Log.d("ABCD", cmd);
+            Log.d("ABCDE", buffer);
+        }
+    }
+
+    @Override
+    public void onRunError(Exception e) {
+
+    }
 }
