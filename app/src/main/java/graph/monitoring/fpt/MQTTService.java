@@ -26,7 +26,7 @@ public class MQTTService {
 //    final String subscriptionTopic = "tungdt/f/+";
 
     final String username = "ToanLeThanh";
-    final String password = "aio_ZQmR27WWw7dGwXMapIwM9BvXl1lR";
+    final String password = "aio_pPAf31G1nFCYvE40MPTikMWcxAcp";
 //    final String username = "tungdt";
 //    final String password = "aio_UNBN08aAEbYj4tAnKBCaSiepZ90X";
 

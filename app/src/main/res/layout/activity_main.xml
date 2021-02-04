@@ -81,8 +81,12 @@
             android:text="Button 4"
             android:textColor="@android:color/holo_blue_dark"
             android:textSize="10sp" />
+    </LinearLayout>
 
-        <!-- connect server io.adafruit.com -->
+    <!-- connect server io.adafruit.com -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
         <Button
             android:id="@+id/btnOnLed"
             android:layout_width="wrap_content"
@@ -100,7 +104,6 @@
             android:text="off led"
             android:textColor="@android:color/holo_blue_dark"
             android:textSize="10sp" />
-
     </LinearLayout>
 
     <!-- Show data from microbit-->
@@ -111,48 +114,48 @@
         android:text="Message" />
 
     <!-- Chart -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="#ff0000"
-                android:text="NHIỆT ĐỘ"
-                android:textAlignment="center"
-                android:textColor="#ffffff"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical">-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="5dp"-->
+                <!--android:background="#ff0000"-->
+                <!--android:text="Chart"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="20dp"-->
+                <!--android:textStyle="bold" />-->
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/graphTemperature"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_margin="5dp" />
+            <!--<com.jjoe64.graphview.GraphView-->
+                <!--android:id="@+id/graphChart"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="250dp"-->
+                <!--android:layout_margin="5dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="#ff0000"
-                android:text="ÁNH SÁNG"
-                android:textAlignment="center"
-                android:textColor="#ffffff"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="5dp"-->
+                <!--android:background="#ff0000"-->
+                <!--android:text="ÁNH SÁNG"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="20dp"-->
+                <!--android:textStyle="bold" />-->
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/graphLightLevel"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_margin="5dp" />
+            <!--<com.jjoe64.graphview.GraphView-->
+                <!--android:id="@+id/graphLightLevel"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="250dp"-->
+                <!--android:layout_margin="5dp" />-->
 
-        </LinearLayout>
-    </ScrollView>
+        <!--</LinearLayout>-->
+    <!--</ScrollView>-->
 
 </LinearLayout>
