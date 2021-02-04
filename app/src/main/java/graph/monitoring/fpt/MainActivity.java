@@ -126,15 +126,40 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         });
 
         btnOn.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View view) {
-//                sendDataMQTT("1");
+                sendDataMQTT("1");
             }
         });
 
         btnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                sendDataMQTT("0");
+                sendDataMQTT("0");
+            }
+        });
+
+        // TODO: connect adafruit
+        mqttService = new MQTTService(this);
+        mqttService.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable cause) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                Log.d("mqtt", "Recieved: " + message.toString());
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
             }
         });
     }
@@ -288,29 +313,21 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
     }
 
     // TODO: connect server adafruit
-//    mqttService =  new MQTTService(this);
-//    mqttService.setCallback(new MqttCallbackExtended() {
-//    @Override
-//    private void sendDataMQTT(String data) {
-//
-//        MqttMessage msg = new MqttMessage();
-//        msg.setId(1234);
-//        msg.setQos(0);
-//        msg.setRetained(true);
-//        msg.setRetained(true);//update current status when open app.
-//
-//        byte[] b = data.getBytes(Charset.forName("UTF-8"));
-//        msg.setPayload(b);
-//
-//        Log.d("Toan","Publish :" + msg);
-//        Log.d("Toan", "Publish :" + msg);
-//        try {
+    private void sendDataMQTT(String data) {
+
+        MqttMessage msg = new MqttMessage();
+        msg.setId(1234);
+        msg.setQos(0);
+        msg.setRetained(true);//update current status when open app.
+
+        byte[] b = data.getBytes(Charset.forName("UTF-8"));
+        msg.setPayload(b);
+
+        Log.d("Toan", "Publish :" + msg);
+        try {
+            mqttService.mqttAndroidClient.publish("ToanLeThanh/f/BBC_LED2_Feed", msg);
 //            mqttService.mqttAndroidClient.publish("tungdt/f/Feed_BBC_LED", msg);
-//
-//        }catch (MqttException e){
-//            mqttService.mqttAndroidClient.publish("ToanLeThanh/f/BBC_LED2_Feed", msg);
-////            mqttService.mqttAndroidClient.publish("tungdt/f/Feed_BBC_LED", msg);
-//        } catch (MqttException e) {
-//        }
-//    }
+        } catch (MqttException e) {
+        }
+    }
 }
