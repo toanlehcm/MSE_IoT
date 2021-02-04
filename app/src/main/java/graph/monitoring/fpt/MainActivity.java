@@ -59,7 +59,7 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
 
     GraphView graphTemperature, graphLightLevel;
     Button btnOne, btnTwo, btnThree, btnFour;
-//    MQTTService mqttService;
+    MQTTService mqttService;
     Button btnOn, btnOff;
 
     @Override
@@ -97,19 +97,6 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
         btnOn = findViewById(R.id.btnOnLed);
         btnOff = findViewById(R.id.btnOffLed);
 
-        btnOn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-//                sendDataMQTT("1");
-            }
-        });
-
-        btnOff.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                sendDataMQTT("0");
-            }
-        });
-
         btnOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,6 +122,19 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
             @Override
             public void onClick(View view) {
                 openUART("4");
+            }
+        });
+
+        btnOn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+//                sendDataMQTT("1");
+            }
+        });
+
+        btnOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                sendDataMQTT("0");
             }
         });
     }
@@ -287,7 +287,7 @@ public class MainActivity extends Activity implements SerialInputOutputManager.L
 
     }
 
-    // TODO: Led 31/1/2021
+    // TODO: connect server adafruit
 //    mqttService =  new MQTTService(this);
 //    mqttService.setCallback(new MqttCallbackExtended() {
 //    @Override
